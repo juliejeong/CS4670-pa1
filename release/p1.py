@@ -5,7 +5,9 @@ from PIL import Image
 
 ### TODO 1: Read an Image and convert it into a floating point array with values between 0 and 1. You can assume a color image
 def imread(filename):
-    pass
+    img = Image.open(filename)
+    ans = np.array(img, dtype=np.float32) / 255.0
+    return ans
 
 ### TODO 2: Convolve an image (m x n x 3 or m x n) with a filter(l x k). Perform "same" filtering. Apply the filter to each channel if there are more than 1 channels
 def convolve(img, filt):
@@ -15,7 +17,15 @@ def convolve(img, filt):
 
 ### TODO 3: Create a gaussian filter of size k x k and with standard deviation sigma
 def gaussian_filter(k, sigma):
-    pass
+    center = k // 2
+    x, y = np.mgrid[0:k, 0:k]
+
+    #shift the coordinates of the arrays so that the center of the filter is at (0, 0)
+    x = x - center
+    y = y - center
+    g = (1 / (2 * np.pi * sigma ** 2)) * np.exp(-(x ** 2 + y ** 2) / (2 * sigma ** 2))
+    ans = g / np.sum(g)
+    return ans
 
 ### TODO 4: Compute the image gradient. 
 ### First convert the image to grayscale by using the formula:
