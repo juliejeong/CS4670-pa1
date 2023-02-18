@@ -15,26 +15,30 @@ def imread(filename):
 
 
 def convolve(img, filt):
-    for c in range(img.ndim):
-        channel = img[:, :, c]
+    matrix = np.zeros(img.shape)
+    if img.ndim == 3:
+        output = matrix 
+        for i in range(img.shape[2]):
+            output[:,:,i] = convolve(img[:,:,i], filt)
+        return output
+    
+    m = img.shape[0]
+    n = img.shape[1]
 
-        m = img.shape[0]
-        n = img.shape[1]
+    kernel = np.flip(filt)
+    l = kernel.shape[0]
+    k = kernel.shape[1]
+    padding_x = l // 2
+    padding_y = k // 2
 
-        kernel = np.flip(filt)
-        l = kernel.shape[0]
-        k = kernel.shape[1]
-        padding_x = l // 2
-        padding_y = k // 2
+    padded_img = np.zeros((m + padding_x * 2, n + padding_y * 2))
+    padded_img[padding_x:m + padding_x, padding_y:n + padding_y] = img
+    output = np.zeros((m,n))
 
-        padded_img = np.zeros((m + padding_x * 2, n + padding_y * 2))
-        padded_img[padding_x:m + padding_x, padding_y:n + padding_y] = channel
-        output = np.zeros(img.shape)
-
-        for i in range(m):
-            for j in range(n):
-                convol_img = padded_img[i:i+l, j:j+k]
-                output[i, j] = np.sum(kernel * convol_img)
+    for i in range(m):
+        for j in range(n):
+            convol_img = padded_img[i:i+l, j:j+k]
+            output[i, j] = np.sum(kernel * convol_img)
 
     return output
 
