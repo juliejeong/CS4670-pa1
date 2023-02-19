@@ -100,10 +100,10 @@ def check_distance_from_line(x, y, theta, c, thresh):
 
 def draw_lines(img, lines, thresh):
     copy = np.copy(img)
-    m, n = img.shape
-    for i in range(m):
-        for j in range(n):
-            for (theta, c) in lines:
+    m, n, _ = img.shape
+    for (theta, c) in lines:
+        for i in range(m):
+            for j in range(n):
                 if check_distance_from_line(i, j, theta, c, thresh):
                     copy[i, j, 0] = 1
                     copy[i, j, 1] = 0
