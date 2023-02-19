@@ -17,11 +17,11 @@ def imread(filename):
 def convolve(img, filt):
     matrix = np.zeros(img.shape)
     if img.ndim == 3:
-        output = matrix 
+        output = matrix
         for i in range(img.shape[2]):
-            output[:,:,i] = convolve(img[:,:,i], filt)
+            output[:, :, i] = convolve(img[:, :, i], filt)
         return output
-    
+
     m = img.shape[0]
     n = img.shape[1]
 
@@ -33,7 +33,7 @@ def convolve(img, filt):
 
     padded_img = np.zeros((m + padding_x * 2, n + padding_y * 2))
     padded_img[padding_x:m + padding_x, padding_y:n + padding_y] = img
-    output = np.zeros((m,n))
+    output = np.zeros((m, n))
 
     for i in range(m):
         for j in range(n):
@@ -67,16 +67,15 @@ def gaussian_filter(k, sigma):
 
 
 def gradient(img):
-    #convert to grayscale
-    grayimg = 0.2125*img[:,:,0] + 0.7154*img[:,:,1] + 0.0721*img[:,:,2]
-    k = 5 
-    sigma = 1 
+    # convert to grayscale
+    grayimg = 0.2125*img[:, :, 0] + 0.7154*img[:, :, 1] + 0.0721*img[:, :, 2]
+    k = 5
+    sigma = 1
     kernel = gaussian_filter(k, sigma)
     grayimg = convolve(grayimg, kernel)
     x_deriv = convolve(grayimg, [[0.5, 0, -0.5]])
     y_deriv = convolve(grayimg, [[0.5], [0], [-0.5]])
     return np.sqrt(x_deriv**2 + y_deriv**2), np.arctan2(y_deriv, x_deriv)
-
 
 
 # ----------------Line detection----------------
@@ -100,8 +99,16 @@ def check_distance_from_line(x, y, theta, c, thresh):
 
 
 def draw_lines(img, lines, thresh):
-    pass
-
+    copy = np.copy(img)
+    m, n = img.shape
+    for i in range(m):
+        for j in range(n):
+            for (theta, c) in lines:
+                if check_distance_from_line(i, j, theta, c, thresh):
+                    copy[i, j, 0] = 1
+                    copy[i, j, 1] = 0
+                    copy[i, j, 2] = 0
+    return copy
 
 
 # TODO 7: Do Hough voting. You get as input the gradient magnitude (m x n) and the gradient orientation (m x n),
