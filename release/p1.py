@@ -147,13 +147,12 @@ def localmax(votes, thetas, cs, thresh, nbhd):
     for ind_t, theta in enumerate(thetas):
         for ind_c, c in enumerate(cs):
             if votes[ind_t, ind_c] > thresh:
-                i_1 = max(0, ind_t - nbhd//2)
-                i_2 = min(ind_t + nbhd//2, len(thetas))
-                j_1 = max(0, ind_c - nbhd//2)
-                j_2 = min(ind_c + nbhd//2, len(cs))
-                if votes[ind_t, ind_c] > np.max(votes[i_1:i_2, j_1:j_2]):
+                vals = votes[max(0, ind_t - nbhd//2) : min(len(thetas), ind_t + nbhd//2 + 1),
+                                 max(0, ind_c - nbhd//2) : min(len(cs), ind_c + nbhd//2 + 1)]
+                if votes[ind_t, ind_c] == np.max(vals):
                     max_list.append((theta, c))
     return max_list
+
 
 # Final product: Identify lines using the Hough transform
 
