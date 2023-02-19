@@ -104,7 +104,7 @@ def draw_lines(img, lines, thresh):
     for (theta, c) in lines:
         for i in range(m):
             for j in range(n):
-                if check_distance_from_line(i, j, theta, c, thresh):
+                if check_distance_from_line(j, i, theta, c, thresh):
                     copy[i, j, 0] = 1
                     copy[i, j, 1] = 0
                     copy[i, j, 2] = 0
@@ -121,7 +121,18 @@ def draw_lines(img, lines, thresh):
 
 
 def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
-    pass
+
+    x, y = np.where(gradmag > thresh1)
+    tc_array = np.zeros((len(thetas), len(cs)))
+
+    for ind, val in enumerate(thetas):
+        for indc, valc in enumerate(cs):
+            b = check_distance_from_line(x, y, val, valc, thresh2)
+            c = np.abs(gradori[y, x] - val) < thresh3
+            tc_array[ind, indc] = np.sum(b & c, axis=0)
+
+    return tc_array
+
 
 # TODO 8: Find local maxima in the array of votes. A (theta, c) pair counts as a local maxima if:
 # (a) Its votes are greater than thresh, **and**
