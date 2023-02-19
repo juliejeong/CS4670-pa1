@@ -67,7 +67,17 @@ def gaussian_filter(k, sigma):
 
 
 def gradient(img):
-    pass
+    #convert to grayscale
+    grayimg = 0.2125*img[:,:,0] + 0.7154*img[:,:,1] + 0.0721*img[:,:,2]
+    k = 5 
+    sigma = 1 
+    kernel = gaussian_filter(k, sigma)
+    grayimg = convolve(grayimg, kernel)
+    x_deriv = convolve(grayimg, [[0.5, 0, -0.5]])
+    y_deriv = convolve(grayimg, [[0.5], [0], [-0.5]])
+    return np.sqrt(x_deriv**2 + y_deriv**2), np.arctan2(y_deriv, x_deriv)
+
+
 
 # ----------------Line detection----------------
 
