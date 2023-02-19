@@ -129,9 +129,9 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
     tc_array = np.zeros((len(thetas), len(cs)))
 
     for ind_t, theta in enumerate(thetas):
+        cond_c = (np.abs(gradori[y, x] - theta) < thresh3)
         for ind_c, c in enumerate(cs):
             cond_b = check_distance_from_line(x, y, theta, c, thresh2)
-            cond_c = (np.abs(gradori[y, x] - theta) < thresh3)
             tc_array[ind_t, ind_c] = np.sum(cond_b & cond_c, axis=0)
 
     return tc_array
@@ -150,8 +150,8 @@ def localmax(votes, thetas, cs, thresh, nbhd):
     for ind_t, theta in enumerate(thetas):
         for ind_c, c in enumerate(cs):
             if votes[ind_t, ind_c] > thresh:
-                vals = votes[max(0, ind_t - nbhd//2) : min(len(thetas), ind_t + nbhd//2 + 1),
-                                 max(0, ind_c - nbhd//2) : min(len(cs), ind_c + nbhd//2 + 1)]
+                vals = votes[max(0, ind_t - nbhd//2): min(len(thetas), ind_t + nbhd//2 + 1),
+                             max(0, ind_c - nbhd//2): min(len(cs), ind_c + nbhd//2 + 1)]
                 if votes[ind_t, ind_c] == np.max(vals):
                     max_list.append((theta, c))
     return max_list
