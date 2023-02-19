@@ -122,13 +122,16 @@ def draw_lines(img, lines, thresh):
 
 def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
 
-    x, y = np.where(gradmag > thresh1)
+    max_y, max_x = gradmag.shape
+    y, x = np.where(gradmag > thresh1)
+    y = np.clip(y, 0, max_y-1)
+    x = np.clip(x, 0, max_x-1)
     tc_array = np.zeros((len(thetas), len(cs)))
 
     for ind_t, theta in enumerate(thetas):
         for ind_c, c in enumerate(cs):
             cond_b = check_distance_from_line(x, y, theta, c, thresh2)
-            cond_c = np.abs(gradori[y, x] - theta) < thresh3
+            cond_c = (np.abs(gradori[y, x] - theta) < thresh3)
             tc_array[ind_t, ind_c] = np.sum(cond_b & cond_c, axis=0)
 
     return tc_array
