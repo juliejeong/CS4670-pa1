@@ -88,7 +88,9 @@ def gradient(img):
 
 
 def check_distance_from_line(x, y, theta, c, thresh):
-    pass
+    num = np.abs(x * np.cos(theta) + y * np.sin(theta) + c)
+    den = np.sqrt(np.cos(theta) ** 2 + np.sin(theta) ** 2)
+    return (num/den) < thresh
 
 # TODO 6: Write a function to draw a set of lines on the image.
 # The `img` input is a numpy array of shape (m x n x 3).
@@ -99,6 +101,8 @@ def check_distance_from_line(x, y, theta, c, thresh):
 
 def draw_lines(img, lines, thresh):
     pass
+
+
 
 # TODO 7: Do Hough voting. You get as input the gradient magnitude (m x n) and the gradient orientation (m x n),
 # as well as a set of possible theta values and a set of possible c values.
