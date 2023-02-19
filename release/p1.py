@@ -125,11 +125,11 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
     x, y = np.where(gradmag > thresh1)
     tc_array = np.zeros((len(thetas), len(cs)))
 
-    for ind, val in enumerate(thetas):
-        for indc, valc in enumerate(cs):
-            b = check_distance_from_line(x, y, val, valc, thresh2)
-            c = np.abs(gradori[y, x] - val) < thresh3
-            tc_array[ind, indc] = np.sum(b & c, axis=0)
+    for ind_t, theta in enumerate(thetas):
+        for ind_c, c in enumerate(cs):
+            cond_b = check_distance_from_line(x, y, theta, c, thresh2)
+            cond_c = np.abs(gradori[y, x] - theta) < thresh3
+            tc_array[ind_t, ind_c] = np.sum(cond_b & cond_c, axis=0)
 
     return tc_array
 
@@ -143,7 +143,17 @@ def hough_voting(gradmag, gradori, thetas, cs, thresh1, thresh2, thresh3):
 
 
 def localmax(votes, thetas, cs, thresh, nbhd):
-    pass
+    max_list = []
+    for ind_t, theta in enumerate(thetas):
+        for ind_c, c in enumerate(cs):
+            if votes[ind_t, ind_c] > thresh:
+                i_1 = max(0, ind_t - nbhd//2)
+                i_2 = min(ind_t + nbhd//2, len(thetas))
+                j_1 = max(0, ind_c - nbhd//2)
+                j_2 = min(ind_c + nbhd//2, len(cs))
+                if votes[ind_t, ind_c] > np.max(votes[i_1:i_2, j_1:j_2]):
+                    max_list.append((theta, c))
+    return max_list
 
 # Final product: Identify lines using the Hough transform
 
